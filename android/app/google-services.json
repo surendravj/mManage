@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "451543415434",
+    "project_id": "mmanage-9a27e",
+    "storage_bucket": "mmanage-9a27e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451543415434:android:e45a26f4c8e1d373360b73",
+        "android_client_info": {
+          "package_name": "com.example.mmanage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451543415434-kdrp3vgj2luljam5dj1uf2f953s2dtsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWLctQZlEcVAwNhr3G7ojlCWieNEheTOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451543415434-kdrp3vgj2luljam5dj1uf2f953s2dtsk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

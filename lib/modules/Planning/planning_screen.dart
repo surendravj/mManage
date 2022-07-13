@@ -1,12 +1,14 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, use_key_in_widget_constructors, prefer_typing_uninitialized_variables, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mmanage/backend/planning_service.dart';
 import 'package:mmanage/constants/styles.dart';
 import 'package:mmanage/constants/util.dart';
+import 'package:mmanage/modules/Planning/budget_planning_screen.dart';
 import 'package:mmanage/modules/Planning/cards_manage.dart';
+import 'package:mmanage/modules/Planning/credit_card_form.dart';
 import 'package:provider/provider.dart';
-
 import '../../constants/colors.dart';
 import 'planning_card.dart';
 
@@ -18,76 +20,85 @@ class PlanningScreen extends StatefulWidget {
 }
 
 class _PlanningScreenState extends State<PlanningScreen> {
+  int amount = 0;
+
+  @override
+  void initState() {
+    var provider = Provider.of<PlanningService>(context, listen: false);
+    provider.getBudgetData();
+    provider.getCards();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var planning = Provider.of<PlanningService>(context);
     return Scaffold(
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width * 1,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TopSection(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
-                    child: Column(
-                      children: [
-                        !planning.isCardsDataLoaded ? CardsManage() : Text(""),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Budget Planning",
-                                style: Styles.textDecoration(
-                                    color: Colors.black87),
-                              ),
-                              Text(
-                                "10 Days Ago",
-                                style: Styles.textDecoration(
-                                    color: Colors.black87),
-                              )
-                            ],
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 1,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TopSection(planning.budget),
+                planning.isPlanned
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Budget Planning",
+                              style:
+                                  Styles.textDecoration(color: Colors.black87),
+                            ),
+                            InkWell(onTap: () {}, child: Icon(Icons.edit))
+                          ],
+                        ),
+                      )
+                    : Text(""),
+                planning.isPlanned
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemBuilder: (ctx, index) => PlanningCardUI(
+                          planning.planning["allocations"][index]
+                              ["budgetCategory"],
+                          4500,
+                          planning.planning["allocations"][index]
+                              ["allocationAmount"],
+                          Util.getPlanningIcon(
+                            planning.planning["allocations"][index]
+                                ["budgetCategory"],
                           ),
                         ),
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          child: Column(
-                            children: [
-                              PlanningCardUI(
-                                  "Food", 1400, 32, Icons.fastfood_outlined),
-                              PlanningCardUI("Groceries", 1400, 32,
-                                  Icons.shopping_cart_checkout),
-                              PlanningCardUI("Shopping", 1400, 32,
-                                  Icons.shopping_bag_outlined),
-                              PlanningCardUI("Bills", 1400, 32, Icons.receipt),
-                              PlanningCardUI("Travel", 1400, 32,
-                                  Icons.card_travel_outlined),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-            )
-          ],
+                        itemCount: planning.planning["allocations"].length,
+                      )
+                    : Text(""),
+                planning.isCardsDataLoaded ? CardsManage() : Text(""),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class TopSection extends StatelessWidget {
-  const TopSection({
-    Key? key,
-  }) : super(key: key);
+class TopSection extends StatefulWidget {
+  TopSection(this.amount);
+
+  final int amount;
+  @override
+  State<TopSection> createState() => _TopSectionState();
+}
+
+class _TopSectionState extends State<TopSection> {
+  openForm(Widget screen) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +124,7 @@ class TopSection extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        Util.formatMoney(7500),
+                        Util.formatMoney(widget.amount),
                         style: Styles.textDecoration(
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),
@@ -143,10 +154,12 @@ class TopSection extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NaviagtorIcon(Icons.home_outlined, 1),
-                  NaviagtorIcon(Icons.manage_accounts_outlined, 2),
-                  NaviagtorIcon(Icons.credit_card_sharp, 3),
-                  NaviagtorIcon(Icons.access_time_outlined, 4),
+                  NaviagtorIcon(Icons.manage_accounts_outlined, 2,
+                      () => openForm(BudgetPlanningScreen()), "Budget"),
+                  NaviagtorIcon(Icons.credit_card_sharp, 3,
+                      () => openForm(CreditCardFormPage()), "Cards"),
+                  NaviagtorIcon(
+                      Icons.access_time_outlined, 4, () {}, "History"),
                 ],
               )
             ],
@@ -158,26 +171,39 @@ class TopSection extends StatelessWidget {
 }
 
 class NaviagtorIcon extends StatelessWidget {
-  NaviagtorIcon(
-    this.icon,
-    this.index,
-  );
+  NaviagtorIcon(this.icon, this.index, this.onClickFun, this.label);
 
   final IconData icon;
   final int index;
+  final String label;
+  var onClickFun;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(icon, size: 30, color: Colors.black87),
+      child: InkWell(
+        onTap: onClickFun,
+        child: Column(
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(icon, size: 30, color: Colors.black87),
+              ),
+            ),
+            Text(
+              label,
+              style: Styles.textDecoration(
+                color: AppTheme.primaryText,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+          ],
         ),
       ),
     );

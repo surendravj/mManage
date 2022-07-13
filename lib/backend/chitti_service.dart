@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
+import 'package:mmanage/constants/util.dart';
 
 class ChittiService extends ChangeNotifier {
   static CollectionReference firestore =
@@ -26,7 +26,6 @@ class ChittiService extends ChangeNotifier {
   Future<String> createChitti(
       String date, String months, String amount, String name) async {
     String id;
-    final f = new DateFormat('yyyy-MM-dd');
 
     Map<String, dynamic> data = {
       "name": name,
@@ -39,7 +38,7 @@ class ChittiService extends ChangeNotifier {
       "isWithdrawed": false,
       "paidAmount": 0,
       "recivedAmount": 0,
-      "endDate": f.format(
+      "endDate": Util.formatDate(
           DateTime.parse(date).add(Duration(days: (int.parse(months) * 30)))),
       "transactions": {}
     };
@@ -72,7 +71,7 @@ class ChittiService extends ChangeNotifier {
 
   Future<String> addChittiTransaction(
       String id, dynamic amount, Map transactions, dynamic paidAmount) async {
-    String date = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    String date = Util.formatDate(DateTime.now());
     Map<dynamic, dynamic> ref = Map<dynamic, dynamic>.from(transactions);
     if (ref.containsKey(date) && ref.isNotEmpty) {
       return "Transaction exist";

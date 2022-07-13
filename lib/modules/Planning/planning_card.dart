@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:mmanage/backend/planning_service.dart';
+import 'package:mmanage/modules/Planning/planning_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/styles.dart';
@@ -11,12 +14,14 @@ class PlanningCardUI extends StatelessWidget {
 
   final String name;
   final int amount;
-  final double percentage;
+  final dynamic percentage;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<PlanningService>(context);
     return Card(
+      elevation: 0,
       child: ListTile(
         leading: CircleAvatar(
           radius: 25,
@@ -27,14 +32,14 @@ class PlanningCardUI extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          Util.formatMoney(amount),
-          style: Styles.textDecoration(color: Colors.black45),
+          Util.formatMoney(provider.percentageToAmount(percentage)),
+          style: Styles.textDecoration(color: AppTheme.secondaryText),
         ),
-        title: Text(name, style: Styles.textDecoration(color: Colors.green)),
+        title: Text(name, style: Styles.textDecoration(color: AppTheme.filler)),
         dense: true,
         trailing: Text(
           '$percentage%',
-          style: Styles.textDecoration(color: Colors.green),
+          style: Styles.textDecoration(color: AppTheme.secondaryFiller),
         ),
       ),
     );

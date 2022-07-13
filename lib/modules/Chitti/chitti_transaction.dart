@@ -219,7 +219,7 @@ class TopSection extends StatelessWidget {
                   Center(
                     child: Text("Chitti Amount",
                         style: Styles.textDecoration(
-                            color: AppTheme.secondaryText,
+                            color:AppTheme.secondaryText,
                             fontWeight: FontWeight.bold)),
                   ),
                   Center(

@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_const_constructors_in_immutables, use_key_in_widget_constructors, prefer_typing_uninitialized_variables, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:mmanage/backend/planning_service.dart';
 import 'package:mmanage/constants/styles.dart';
 import 'package:mmanage/constants/util.dart';
@@ -54,7 +53,13 @@ class _PlanningScreenState extends State<PlanningScreen> {
                               style:
                                   Styles.textDecoration(color: Colors.black87),
                             ),
-                            InkWell(onTap: () {}, child: Icon(Icons.edit))
+                            InkWell(
+                              onTap: planning.deleteBudget,
+                              child: Icon(
+                                Icons.delete_outline_outlined,
+                                color: AppTheme.secondaryText,
+                              ),
+                            )
                           ],
                         ),
                       )
@@ -66,7 +71,9 @@ class _PlanningScreenState extends State<PlanningScreen> {
                         itemBuilder: (ctx, index) => PlanningCardUI(
                           planning.planning["allocations"][index]
                               ["budgetCategory"],
-                          4500,
+                          Util.formatMoney(planning.percentageToAmount(
+                              planning.planning["allocations"][index]
+                                  ["allocationAmount"])),
                           planning.planning["allocations"][index]
                               ["allocationAmount"],
                           Util.getPlanningIcon(
@@ -102,6 +109,7 @@ class _TopSectionState extends State<TopSection> {
 
   @override
   Widget build(BuildContext context) {
+    var planning = Provider.of<PlanningService>(context);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 1,
       height: MediaQuery.of(context).size.height * 0.25,
@@ -154,8 +162,14 @@ class _TopSectionState extends State<TopSection> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  NaviagtorIcon(Icons.manage_accounts_outlined, 2,
-                      () => openForm(BudgetPlanningScreen()), "Budget"),
+                  NaviagtorIcon(
+                      Icons.manage_accounts_outlined,
+                      2,
+                      planning.isPlanned
+                          ? () =>
+                              Util.snackBar(context, "Budget already created")
+                          : () => openForm(BudgetPlanningScreen()),
+                      "Budget"),
                   NaviagtorIcon(Icons.credit_card_sharp, 3,
                       () => openForm(CreditCardFormPage()), "Cards"),
                   NaviagtorIcon(

@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:mmanage/backend/planning_service.dart';
 import 'package:mmanage/constants/colors.dart';
 import 'package:mmanage/constants/styles.dart';

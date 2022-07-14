@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Util {
-  static String formatMoney(dynamic? value) {
+  static String formatMoney(dynamic value) {
     var format =
         NumberFormat.currency(locale: 'HI', symbol: "₹", decimalDigits: 0);
     return format.format(value);
@@ -29,5 +29,11 @@ class Util {
     } else {
       return Icons.more_horiz_outlined;
     }
+  }
+
+  static snackBar(BuildContext context, String dialog) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(dialog)),
+    );
   }
 }

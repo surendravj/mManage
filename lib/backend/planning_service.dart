@@ -38,14 +38,55 @@ class PlanningService extends ChangeNotifier {
     notifyListeners();
   }
 
-  addAllocation(double allocation) {
-    allocations.add(
-        {"budgetCategory": budgetCategory, "allocationAmount": allocation});
-    notifyListeners();
+  bool isBudgetAllocated() {
+    bool isAllocated = false;
+    allocations.forEach((element) {
+      if (element["budgetCategory"] == budgetCategory) {
+        isAllocated = true;
+      }
+    });
+    return isAllocated;
   }
 
-  double percentageToAmount(dynamic percentage) {
-    return (budget / 100) * percentage;
+  int calculateBudget() {
+    double budget = 0;
+    allocations.forEach((element) {
+      budget += element["allocationAmount"];
+    });
+    return budget.toInt();
+  }
+
+  addAllocation(double allocation) {
+    if (allocation != 0) {
+      if (isBudgetAllocated()) {
+        allocations.forEach((element) {
+          if (element["budgetCategory"] == budgetCategory) {
+            element["allocationAmount"] = allocation;
+          }
+        });
+      } else {
+        allocations.add(
+            {"budgetCategory": budgetCategory, "allocationAmount": allocation});
+      }
+      notifyListeners();
+    }
+  }
+
+  int percentageToAmount(dynamic percentage) {
+    return ((budget / 100) * percentage).toInt();
+  }
+
+  Future<void> deleteBudget() async {
+    var date = DateFormat('yyyy-MM').format(DateTime.now());
+    try {
+      await _budget.doc(date).delete();
+      planning = {};
+      isPlanned = false;
+      budget = 0;
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<String> createBudget(int amount) async {
@@ -57,6 +98,7 @@ class PlanningService extends ChangeNotifier {
         "expenses": 0,
         "createdOn": Timestamp.now()
       });
+      await getBudgetData();
       return "Budget Created succesfully";
     } catch (e) {
       return "Opps something went wrong";

@@ -57,6 +57,7 @@ class _ChittiTransactionPageState extends State<ChittiTransactionPage> {
     data['transactions'].forEach((key, value) => {
           bills.add({"date": key, "amount": value})
         });
+    bills.sort((a, b) => b["date"].compareTo(a["date"]));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppTheme.filler,
@@ -106,8 +107,10 @@ class _ChittiTransactionPageState extends State<ChittiTransactionPage> {
                     Expanded(
                         child: ListView.builder(
                       itemBuilder: ((context, index) {
-                        return ChittiTransactionCard(bills[index]['date'],
-                            int.parse(bills[index]['amount']));
+                        return ChittiTransactionCard(
+                          bills[index]['date'],
+                          int.parse(bills[index]['amount']),
+                        );
                       }),
                       itemCount: bills.length,
                     )),
@@ -219,7 +222,7 @@ class TopSection extends StatelessWidget {
                   Center(
                     child: Text("Chitti Amount",
                         style: Styles.textDecoration(
-                            color:AppTheme.secondaryText,
+                            color: AppTheme.secondaryText,
                             fontWeight: FontWeight.bold)),
                   ),
                   Center(

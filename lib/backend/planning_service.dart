@@ -1,8 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_returning_null_for_void
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import "package:intl/intl.dart";
 
 class PlanningService extends ChangeNotifier {
@@ -40,30 +39,30 @@ class PlanningService extends ChangeNotifier {
 
   bool isBudgetAllocated() {
     bool isAllocated = false;
-    allocations.forEach((element) {
+    for (var element in allocations) {
       if (element["budgetCategory"] == budgetCategory) {
         isAllocated = true;
       }
-    });
+    }
     return isAllocated;
   }
 
   int calculateBudget() {
     double budget = 0;
-    allocations.forEach((element) {
+    for (var element in allocations) {
       budget += element["allocationAmount"];
-    });
+    }
     return budget.toInt();
   }
 
   addAllocation(double allocation) {
     if (allocation != 0) {
       if (isBudgetAllocated()) {
-        allocations.forEach((element) {
+        for (var element in allocations) {
           if (element["budgetCategory"] == budgetCategory) {
             element["allocationAmount"] = allocation;
           }
-        });
+        }
       } else {
         allocations.add(
             {"budgetCategory": budgetCategory, "allocationAmount": allocation});
@@ -85,7 +84,9 @@ class PlanningService extends ChangeNotifier {
       budget = 0;
       notifyListeners();
     } catch (e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 

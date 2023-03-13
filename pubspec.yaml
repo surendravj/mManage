@@ -43,6 +43,7 @@ dependencies:
   google_fonts:
   awesome_card:
   flutter_credit_card:
+  pie_chart:
 
 dev_dependencies:
   flutter_test:

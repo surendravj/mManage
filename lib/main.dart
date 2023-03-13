@@ -54,7 +54,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int selectedIndex = 1;
+  int selectedIndex = 0;
 
   static const List<Widget> screens = [
     ExpensesScreen(),

@@ -68,7 +68,7 @@ class _BudgetPlanningScreenState extends State<BudgetPlanningScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var planning = Provider.of<PlanningService>(context);
+   
     return Scaffold(
       appBar: AppBar(
         title: Text(
